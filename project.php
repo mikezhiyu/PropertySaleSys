@@ -30,4 +30,18 @@ if (!isset($_SESSION['todouser'])) {
 $twig = $app->view()->getEnvironment();
 $twig->addGlobal('todouser', $_SESSION['todouser']);
 
+// STATE 1: First show
+$app->get('/master', function() use ($app) {
+    $app->render('master.html.twig');
+});
+
+$app->get('/index', function() use ($app) {
+    $app->render('index.html.twig');
+});
+
+$app->get('/property', function() use ($app) {
+    $app->render('propertydetails.html.twig');
+});
+
+
 $app->run();

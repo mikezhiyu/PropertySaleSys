@@ -1,0 +1,60 @@
+<!DOCTYPE >
+<html lang="en-us">
+    <head>
+        <title>{% block title %}{% endblock %}E&M  Real Estate</title>
+    {% block headExtra %}{% endblock %}
+    <meta charset="UTF-8"  name="viewport" content="width=device-width, initial-scale=1.0"/>
+   
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <link href="style1.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="main">
+        <nav class="header">
+            <img class="logo" src="images/logo1.jpg" width="229" height="36" />
+
+            <ul>
+                <li><a class="active" href="#home">Home</a></li>
+                <li><a href="#news">About Us</a></li>
+                <li><a href="#contact">Register</a></li>
+                <li><a href="#about">Login</a></li>
+                <li><a href="">Contact Us</a></li>
+
+            </ul>
+
+        </nav>
+        <div>
+
+
+        </div>
+        <div class="headerimage">
+            <div class="headeriamge1">
+                <div class="house"></div>
+            </div>
+            <div class="headerimage2">
+                <div class="search1">Find a Property</div>
+
+                <div class="go">
+                    <div>
+                        <input  type="text" placeholder="Search by City,Address,.." />
+                    </div>
+                    <button class="searchbtn">search</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    <div>
+        <footer class="footer">
+            <div class="text"> &copy; Copyright 2017 </div>
+           
+        </footer>
+    </div>
+</div>
+</body>
+</html>
