@@ -2,15 +2,16 @@
 
 session_cache_limiter(false);
 session_start();
+//rWVaKK@0pETJ
+//User: cp4776_pro-em 
+//Database: cp4776_propertymanagement
 
 require_once 'vendor/autoload.php';
 
-//DB::$host = '127.0.0.1';
-DB::$user = 'slimtodo';
-DB::$password = 'gEU3LtlQBieLIqTt';
-DB::$dbName = 'slimtodo';
-DB::$port = 3333;
-DB::$encoding = 'utf8';
+
+DB::$user='cp4776_pro-em ';
+DB::$dbName='cp4776_propertymanagement';
+DB::$password = "rWVaKK@0pETJ";
 
 // Slim creation and setup
 $app = new \Slim\Slim(array(
@@ -41,6 +42,11 @@ $app->get('/index', function() use ($app) {
 
 $app->get('/property', function() use ($app) {
     $app->render('propertydetails.html.twig');
+});
+
+// login form
+$app->get('/login', function() use ($app) {
+    $app->render('login.html.twig');
 });
 
 
