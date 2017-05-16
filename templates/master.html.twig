@@ -11,7 +11,76 @@
     <script>
         $('#myModal').modal('show');
         // www.jquery2dotnet.com
+
+        $(document).ready(function () {
+            $("#emailInUse").hide();
+            $("input[name=email]").keyup(function () {
+                var email = $(this).val();
+                //console.log("Keyup: " + email);
+                if (email === "") {
+                    $("#emailInUse").hide();
+                    return;
+                }
+                $.get("/ajax/emailused/" + email, function (result) {
+                    result = eval(result);
+                    if (result) {
+                        $("#emailInUse").show();
+                    } else {
+                        $("#emailInUse").hide();
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function ()) {
+
+            $('#login_button').click(function () {
+
+                var name = $('#name').val();
+                var password = $('#password').val();
+                var email = $('#email').val();
+                if(name != '' && password !='' && email != '') {
+                    $a.ajax({
+                        url:"project.php",
+                        method:"POST",
+                        data:{name:name,password:password,email:email},
+                        success:function(data){
+                            if(data == 'No') {
+                               alert("Wrong Data"); 
+                            }else {
+                                $('#myModal').hide();
+                                
+                                location.reload();
+                            }
+                        }
+                        
+                    });
+                    
+                }else {
+                    alert("Fields are required");
+                }
+
+
+
+            });
+            $("#logout").click(function()) {
+                
+                var action = "logout";
+                $.ajax({
+                  url:"project.php",
+                  method:"POST",
+                  data:{action,action},
+                   success:function(data){
+                         location.reload();
+                            }
+                   
+                    
+                })
+            
+        });
+
     </script>
+
     <link href="style1.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -55,23 +124,23 @@
                                                 <label for="email" class="col-sm-2 control-label">
                                                     Email</label>
                                                 <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="email1" placeholder="Email" />
+                                                    <input type="email" class="form-control" id="email1" placeholder="Email"  />
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="exampleInputPassword1" class="col-sm-2 control-label">
                                                     Password</label>
                                                 <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="exampleInputPassword1" placeholder="password" />
+                                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="password" />
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
                                                 </div>
                                                 <div class="col-sm-10">
-                                                    <button type="submit" class="btn btn-primary btn-sm">
-                                                        Submit</button>
-                                                    <a href="javascript:;">Forgot your password?</a>
+                                                    <button type="submit" class="btn btn-primary btn-sm" id="login_button" >
+                                                        Login</button>
+                                                    <a href="javascript:;" class="forget" data-toggle="modal" data-target=".forget-modal">Forgot your password?</a>
                                                 </div>
                                             </div>
                                         </form>
@@ -91,7 +160,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-md-9">
-                                                            <input type="text" class="form-control" placeholder="Name" />
+                                                            <input type="text" class="form-control" placeholder="Name" valu="name" id="name" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -100,36 +169,39 @@
                                                 <label for="email" class="col-sm-2 control-label">
                                                     Email</label>
                                                 <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="email" placeholder="Email" />
+                                                    <input type="email" class="form-control" id="email" placeholder="Email"  id="email"/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="mobile" class="col-sm-2 control-label">
                                                     Mobile</label>
                                                 <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="mobile" placeholder="Mobile" />
+                                                    <input type="number" class="form-control" id="mobile" placeholder="Mobile"  value="mobile" id="mobile"/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="password" class="col-sm-2 control-label">
                                                     Password</label>
                                                 <div class="col-sm-10">
-                                                    <input type="password" class="form-control" id="password" placeholder="Password" />
+                                                    <input type="password" class="form-control" id="password" placeholder="Password"  id="password"/>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
                                                 </div>
                                                 <div class="col-sm-10">
-                                                    <button type="button" class="btn btn-primary btn-sm">
-                                                        Save & Continue</button>
-                                                    <button type="button" class="btn btn-default btn-sm">
+                                                    <button type="submit" class="btn btn-primary btn-sm" name="submit" id="registration">
+                                                        Save & Continue </button>
+                                                    <button type="cancel" class="btn btn-default btn-sm">
                                                         Cancel</button>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
+                                <a href="#" id="logout" >Logout</a>
+                                   
+                                   
                                 <div id="OR" class="hidden-xs">
                                     OR</div>
                             </div>
@@ -154,6 +226,27 @@
         </div>
 
         <div>
+            <div class="modal fade forget-modal" tabindex="-1" role="dialog" aria-labelledby="myForgetModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">×</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title">Recovery password</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Type your email account</p>
+                            <input type="email" name="recovery-email" id="recovery-email" class="form-control" autocomplete="off">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-custom">Recovery</button>
+                        </div>
+                    </div> <!-- /.modal-content -->
+                </div> <!-- /.modal-dialog -->
+            </div> <!-- /.modal -->
 
 
         </div>
