@@ -44,107 +44,109 @@ $app->get('/property', function() use ($app) {
     $app->render('propertydetails.html.twig');
 });
 
+$app->get('/list', function() use ($app) {
+    $app->render('list_property.html.twig');
+});
+
 //???????get data from modal and save it into data base
 
-$connect = mysqli_connect("localhost",  "cp4776_propertymanagement","rWVaKK@0pETJ" ,"property");
-if(isset($_post["username"])) {
-    
-    $query = "SELECT * FROM users WHERE name='".$_POST["name"]."' AND password = '".$_POST["password"]."'";
-    $result = mysqli_query($connect, $query);
-    if(mysqli_num_rows($result) > 0) {
-        
-        $_SESSION['user'] = $_post['name'];
-        echo 'Yes';
-        
-    }   else 
-    {
-        echo 'No';
-        
+/* $connect = mysqli_connect("localhost",  "cp4776_propertymanagement","rWVaKK@0pETJ" ,"property");
+  if(isset($_post["username"])) {
+
+  $query = "SELECT * FROM users WHERE name='".$_POST["name"]."' AND password = '".$_POST["password"]."'";
+  $result = mysqli_query($connect, $query);
+  if(mysqli_num_rows($result) > 0) {
+
+  $_SESSION['user'] = $_post['name'];
+  echo 'Yes';
+
+  }   else
+  {
+  echo 'No';
+
+  }
+
+  }
+ */
+
+
+//add properties to sale
+$app->get('/add', function() use ($app) {
+    if (!$_SESSION['user']) {
+        $app->render('forbidden.html.twig');
+        return;
     }
-    
-}
+    $app->render('add_property.html.twig');
+});
 
-
-//register
-/*$app->post('/index', function() use ($app) {
+$app->post('/add', function() use ($app) {
+    if (!$_SESSION['user']) {
+        $app->render('forbidden.html.twig');
+        return;
+    }
+    print_r($_POST);
+    // print_r($_FILES);
     // extract variables
-    $email = $app->request()->post('email');
-    $name = $app->request()->post('name');
-    $password = $app->request()->post('password');
-    // list of values to retain after a failed submission
-   // $valueList = array('email' => $email);
-    // check for errors and collect error messages
+    $postalcode = $app->request()->post('postCode');
+    $address = $app->request()->post('address');
+    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
+    $phoneNumber = $app->request()->post('phoneNumber');
+    $price = $app->request()->post('Price');
+    $numberofbedroom = $app->request()->post('numberOfBedroom');
+    $year = $app->request()->post('yearOfBuild');
+    $status = $app->request()->post('status');
+    $valueList = array('postCode' => $postalcode, 'address' => $address,
+        'phoneNumber' => $phoneNumber);
+    // verify inputs
     $errorList = array();
-    if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
-        array_push($errorList, "Email is invalid");
-    } else {
-        $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
-        if ($user) {
-            array_push($errorList, "Email already in use");
+    if (strlen($address) < 2 || strlen($address) > 200) {
+        array_push($errorList, "address must be between 2 and 200 characters");
+    }
+
+    if (empty($postalcode)) {
+        array_push($errorList, "please enter the postal code");
+    }
+    if ($image) {
+        $imageInfo = getimagesize($image["tmp_name"]);
+        if (!$imageInfo) {
+            array_push($errorList, "File does not look like an valid image");
+        } else {
+            $width = $imageInfo[0];
+            $height = $imageInfo[1];
+            if ($width > 300 || $height > 300) {
+                array_push($errorList, "Image must at most 300 by 300 pixels");
+            }
         }
     }
-   
-        if (strlen($pass1) < 6) {
-            array_push($errorList, "Password too short, must be 6 characters or longer");
-        } 
-        if (preg_match('/[A-Z]/', $pass1) != 1
-         || preg_match('/[a-z]/', $pass1) != 1
-         || preg_match('/[0-9]/', $pass1) != 1) {
-            array_push($errorList, "Password must contain at least one lowercase, "
-                    . "one uppercase letter, and a digit");
-        }
-    
-    //
-    if ($errorList) {
-        $app->render('index.html.twig', array(
-            'errorList' => $errorList,
+    // receive data and insert
+    if (!$errorList) {
+        $imageBinaryData = file_get_contents($image['tmp_name']);
+        $ownerId = $_SESSION['user']['id'];
+        $mimeType = mime_content_type($image['tmp_name']);
+        DB::insert('houses', array(
+            'ownerId' => $ownerId,
+            'postCode' => $postalcode,
+            'address' => $address,
+            'phoneNumber' => $phoneNumber,
+            'numberOfBedroom' => $numberofbedroom,
+            'Price' => $price,
+            'yearOfBuild' => $year,
+            'status' => $status,
+            'imageData' => $imageBinaryData,
+            'imageMimeType' => $mimeType
+        ));
+
+        $app->render('add_success.html.twig');
+    } else {
+        // TODO: keep values entered on failed submission
+        $app->render('add_property.html.twig', array(
             'v' => $valueList
         ));
-    } else {
-        DB::insert('users', array(
-            'email' => $email,
-            'password' => $password
-        ));
-       // $app->render('register_success.html.twig');
     }
 });
 
-// AJAX: Is user with this email already registered?
-$app->get('/ajax/emailused/:email', function($email) {
-    $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
-    //echo json_encode($user, JSON_PRETTY_PRINT);
-    echo json_encode($user != null);    
-});
 
-*/
-// login form
-/* $app->get('/login', function() use ($app) {
-  $app->render('login.html.twig');
-  }); */
-/*$app->post('/index', function() use ($app) {
-//    print_r($_POST);    
-    $email = $app->request()->post('email');
-    $pass = $app->request()->post('pass');
-    // verification    
-    $error = false;
-    $user = DB::queryFirstRow("SELECT * FROM users WHERE email=%s", $email);
-    if (!$user) {
-        $error = true;
-    } else {
-        if ($user['password'] != $pass) {
-            $error = true;
-        }
-    }
-    // decide what to render
-    if ($error) {
-        $app->render('index.html.twig', array("error" => true));
-    } else {
-        unset($user['password']);
-        $_SESSION['user'] = $user;
-       // $app->render('login_success.html.twig');
-    }
-});
-*/
+
 
 
 $app->run();

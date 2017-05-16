@@ -10,7 +10,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
         $('#myModal').modal('show');
-        // www.jquery2dotnet.com
 
         $(document).ready(function () {
             $("#emailInUse").hide();
@@ -32,53 +31,83 @@
             });
         });
 
-        $(document).ready(function ()) {
+        $(document).ready(function () {
 
             $('#login_button').click(function () {
 
-                var name = $('#name').val();
-                var password = $('#password').val();
-                var email = $('#email').val();
-                if(name != '' && password !='' && email != '') {
+                var name = $('#name1').val();
+                var password = $('#password1').val();
+                var email = $('#email1').val();
+
+
+                if (name !== '' && password !== '' && email !== '') {
                     $a.ajax({
-                        url:"project.php",
-                        method:"POST",
-                        data:{name:name,password:password,email:email},
-                        success:function(data){
-                            if(data == 'No') {
-                               alert("Wrong Data"); 
-                            }else {
+                        url: "project.php",
+                        method: "POST",
+                        data: {name: name, password: password, email: email},
+                        success: function (data) {
+                            if (data == 'No') {
+                                alert("Wrong Data");
+                            } else {
                                 $('#myModal').hide();
-                                
+
                                 location.reload();
                             }
                         }
-                        
+
                     });
-                    
-                }else {
+
+                } else {
                     alert("Fields are required");
                 }
 
 
 
             });
-            $("#logout").click(function()) {
-                
-                var action = "logout";
-                $.ajax({
-                  url:"project.php",
-                  method:"POST",
-                  data:{action,action},
-                   success:function(data){
-                         location.reload();
-                            }
-                   
-                    
-                })
-            
-        });
 
+            $('#registration_button').click(function () {
+
+                var name = $('#name').val();
+                var password = $('#password').val();
+                var email = $('#email').val();
+                var mobile = $('#mobile1').val();
+                if (name !== '' && password !=='' && email !== '' && mobile !== '') {
+                    $a.ajax({
+                        url: "project.php",
+                        method: "POST",
+                        data: {name: name, password: password, email: email},
+                        success: function (data) {
+                            if (data == 'No') {
+                                alert("Wrong Data");
+                            } else {
+                                $('#myModal').hide();
+
+                                location.reload();
+                            }
+                        }
+
+                    });
+
+                } else {
+                    alert("Fields are required");
+                }
+                $("#logout").click(function () {
+
+                    var action = "logout";
+                    $.ajax({
+                        url: "project.php",
+                        method: "POST",
+                        data: {action, action},
+                        success: function (data) {
+                            location.reload();
+                        }
+
+
+                    });
+
+                });
+            });
+        });
     </script>
 
     <link href="style1.css" rel="stylesheet" type="text/css" />
@@ -91,7 +120,7 @@
             <ul>
                 <li><a class="active" href="/index">Home</a></li>
                 <li><a href="#news">About Us</a></li>
-                <li><a href="/property">Properties</a></li>
+                <li><a href="/list">Properties</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#myModal">Login</a></li>
                 <li><a href="/">Contact Us</a></li>
 
@@ -160,7 +189,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-md-9">
-                                                            <input type="text" class="form-control" placeholder="Name" valu="name" id="name" />
+                                                            <input type="text" class="form-control" placeholder="Name" valuE="name" id="name1" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -169,28 +198,28 @@
                                                 <label for="email" class="col-sm-2 control-label">
                                                     Email</label>
                                                 <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="email" placeholder="Email"  id="email"/>
+                                                    <input type="email" class="form-control" id="email" placeholder="Email"  id="email1"/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="mobile" class="col-sm-2 control-label">
                                                     Mobile</label>
                                                 <div class="col-sm-10">
-                                                    <input type="number" class="form-control" id="mobile" placeholder="Mobile"  value="mobile" id="mobile"/>
+                                                    <input type="number" class="form-control" id="mobile" placeholder="Mobile"   id="mobile1"/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="password" class="col-sm-2 control-label">
                                                     Password</label>
                                                 <div class="col-sm-10">
-                                                    <input type="password" class="form-control" id="password" placeholder="Password"  id="password"/>
+                                                    <input type="password" class="form-control" id="password" placeholder="Password"  id="password1"/>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
                                                 </div>
                                                 <div class="col-sm-10">
-                                                    <button type="submit" class="btn btn-primary btn-sm" name="submit" id="registration">
+                                                    <button type="submit" class="btn btn-primary btn-sm" name="submit" id="registration_button">
                                                         Save & Continue </button>
                                                     <button type="cancel" class="btn btn-default btn-sm">
                                                         Cancel</button>
@@ -200,8 +229,8 @@
                                     </div>
                                 </div>
                                 <a href="#" id="logout" >Logout</a>
-                                   
-                                   
+
+
                                 <div id="OR" class="hidden-xs">
                                     OR</div>
                             </div>
@@ -238,7 +267,7 @@
                         </div>
                         <div class="modal-body">
                             <p>Type your email account</p>
-                            <input type="email" name="recovery-email" id="recovery-email" class="form-control" autocomplete="off">
+                            <input type="email" name="recovery-email" id="recovery-email" class="form-control" autocomplete="off" id="email2">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -259,7 +288,7 @@
 
                 <div class="go">
                     <div>
-                        <input  type="text" placeholder="Search by City,Address,.." />
+                        <input class="searchAddress" type="text" placeholder="Search by City,Address,.." />
                     </div>
                     <button class="searchbtn">search</button>
                 </div>
