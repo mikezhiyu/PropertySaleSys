@@ -9,9 +9,11 @@ session_start();
 require_once 'vendor/autoload.php';
 
 
-DB::$user = 'cp4776_pro-em ';
-DB::$dbName = 'cp4776_propertymanagement';
-DB::$password = "rWVaKK@0pETJ";
+DB::$user = 'property';
+//DB::$user = 'cp4776_pro-em ';
+DB::$dbName = 'propertysalesys';
+// DB::$dbName = 'propertymanagement';
+DB::$password = "LCtPJJm6hAxgSrw0";
 
 // Slim creation and setup
 $app = new \Slim\Slim(array(
@@ -72,18 +74,18 @@ $app->get('/list', function() use ($app) {
 
 //add properties to sale
 $app->get('/add', function() use ($app) {
-    if (!$_SESSION['user']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
+  // if (!$_SESSION['user']) {
+   //   $app->render('forbidden.html.twig');
+    //    return;
+   // }
     $app->render('add_property.html.twig');
 });
 
 $app->post('/add', function() use ($app) {
-    if (!$_SESSION['user']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
+    //if (!$_SESSION['user']) {
+    //    $app->render('forbidden.html.twig');
+      //  return;
+  //  }
     print_r($_POST);
     // print_r($_FILES);
     // extract variables
@@ -121,7 +123,7 @@ $app->post('/add', function() use ($app) {
     // receive data and insert
     if (!$errorList) {
         $imageBinaryData = file_get_contents($image['tmp_name']);
-        $ownerId = $_SESSION['user']['id'];
+      //  $ownerId = $_SESSION['user']['id'];
         $mimeType = mime_content_type($image['tmp_name']);
         DB::insert('houses', array(
             'ownerId' => $ownerId,
