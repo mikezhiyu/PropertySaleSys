@@ -1,0 +1,33 @@
+{# empty Twig template #}
+
+
+{% extends "master.html.twig" %}
+
+{% block title %} Property list{% endblock %}
+
+{% block content %}
+
+    <a href="/add"></a>
+    <table border="1">
+        <tr><th>Image</th><th>Status</th><th>Price</th><th>Address</th><th>More Info</th></tr>
+                {% for p in propertyList %}
+            <tr><td>{{p.imagePath}} </td>
+                <td>{{p.status}}</td>
+                <td>{{t.Price}}</td>
+                <td>{{t.address}}</td>
+                <td>  <img src="/imageview/{{p.id}}">
+            <a href="/imageview/{{p.id}}">view alone</a>
+            <a href="/imageview/{{p.id}}/download">download</a></td>
+            <td><a href="/propery">Details</a></td>
+
+            <td><a href="/edit/{{p.id}}">edit</a>
+                <a href="/delete/{{p.id}}">delete</a>
+            </td></tr>
+        {% endfor %}
+</table>
+
+
+{% endblock content %}
+
+
+
