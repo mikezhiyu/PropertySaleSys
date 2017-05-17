@@ -17,7 +17,10 @@
     <form method="post" enctype="multipart/form-data">
         Postal Code <input type="text" name="postalCode" value="{{v.postCode}}"><br>
         Address <input type="text" name="address" value="{{v.address}}"><br>
-        Image: <input type="file" name="image"><br>
+         Image: <input type="file" name="image"><br>
+        {% if v.imagePath %}
+            <img width="50" src="/{{v.imagePath}}">
+        {% endif %}
         Phone Number <input type="number" name="phonenumber" value="{{v.phoneNumber}}" ><br>
         Number of Bedroom <input type="number" name="numberofbedroom" value="{{v.numberOfBedroom}}"><br>
         Price <input type="number" name="price" value="{{v.price}}" ><br>
@@ -25,7 +28,9 @@
         status<input type="text" name="status" value="{{v.status}}" ><br>
 
 
-        <input type="submit" value="Add Property">
+        <input type="submit" value="{{operation}} property">
+        <input type="button" value="Edit">
+        <input type="button" value="Delete">
     </form>
 
 {% endblock content %}
