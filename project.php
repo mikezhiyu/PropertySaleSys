@@ -38,11 +38,11 @@ if (!isset($_SESSION['user'])) {
 $twig = $app->view()->getEnvironment();
 $twig->addGlobal('user', $_SESSION['user']);
 
-// STATE 1: First show
-
-$app->get('/master', function() use ($app) {
-    $app->render('master.html.twig');
+$app->get('/', function() use ($app) {
+    $app->render('index.html.twig');
 });
+
+// STATE 1: First show
 
 
 $app->get('/register', function() use ($app) {
@@ -56,9 +56,14 @@ $app->post('/register', function() use ($app) {
     $email = $app->request()->post('email');
     $pass1 = $app->request()->post('password1');
     $pass2 = $app->request()->post('password2');
-    $name = $app->request()->post('lastname');
+    $firstname = $app->request()->post('firstname');
+    $lastname = $app->request()->post('lastname');
     // list of values to retain after a failed submission
-    $valueList = array('email' => $email);
+    $valueList = array(
+        'email' => $email,
+        'firstname' =>$firstname,
+        'lastname' => $lastname
+    );
     // check for errors and collect error messages
     $errorList = array();
     if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
@@ -69,8 +74,15 @@ $app->post('/register', function() use ($app) {
             array_push($errorList, "Email already in use");
         }
     }
+     if (strlen($firstname) < 2 || strlen($firstname) > 50 || empty($firstname)) {
+            array_push($errorList, "First Name too short or empty, must be 2 characters or longer");
+        }
+     if (strlen($lastname) < 2 || strlen($lastname) > 50 || empty($lastname)) {
+            array_push($errorList, "Last Name too short or empty, must be 2 characters or longer");
+        }
+    
     if ($pass1 != $pass2) {
-        array_push($errorList, "Passwors do not match");
+        array_push($errorList, "Passwords do not match");
     } else {
         if (strlen($pass1) < 6) {
             array_push($errorList, "Password too short, must be 6 characters or longer");
@@ -90,7 +102,7 @@ $app->post('/register', function() use ($app) {
         DB::insert('users', array(
             'email' => $email,
             'password' => $pass1,
-            'name' => $name
+            'name' => $lastname
         ));
         $app->render('register_success.html.twig');
     }
@@ -123,7 +135,7 @@ $app->post('/login', function() use ($app) {
             $error = true;
         }
     }
-    print_r($user);
+    //print_r($user);
     // decide what to render
     if ($error) {
         $app->render('login.html.twig', array("error" => true));
@@ -134,11 +146,18 @@ $app->post('/login', function() use ($app) {
     }
 });
 
-
-
-$app->get('/index', function() use ($app) {
-    $app->render('index.html.twig');
+$app->get('/logout', function() use ($app) {
+    unset($_SESSION['user']);
+    $app->render('logout.html.twig');
 });
+
+//
+$app->get('/session', function() {
+    print_r($_SESSION);
+   
+});
+
+
 
 $app->get('/property', function() use ($app) {
     $app->render('propertydetails.html.twig');
@@ -150,91 +169,17 @@ $app->get('/list', function() use ($app) {
 
 
 
-//add properties to sale
-/*
-$app->get('/add', function() use ($app) {
-    if (!$_SESSION['user']) {
-        $app->render('forbidden.html.twig');
-        return;
-    }
-    $app->render('add_property.html.twig');
-});
 
-$app->post('/add', function() use ($app) {
-    /* if (!$_SESSION['user']) {
-      $app->render('forbidden.html.twig');
-      return;
-      } */
-  /*  print_r($_POST);
-    // print_r($_FILES);
-    // extract variables
-    $postalcode = $app->request()->post('postCode');
-    $address = $app->request()->post('address');
-    $image = isset($_FILES['image']) ? $_FILES['image'] : array();
-    $phoneNumber = $app->request()->post('phoneNumber');
-    $price = $app->request()->post('Price');
-    $numberofbedroom = $app->request()->post('numberOfBedroom');
-    $year = $app->request()->post('yearOfBuild');
-    $status = $app->request()->post('status');
-    $valueList = array('postCode' => $postalcode, 'address' => $address,
-        'phoneNumber' => $phoneNumber);
-    // verify inputs
-    $errorList = array();
-    if (strlen($address) < 2 || strlen($address) > 200) {
-        array_push($errorList, "address must be between 2 and 200 characters");
-    }
-
-    if (empty($postalcode)) {
-        array_push($errorList, "please enter the postal code");
-    }
-    if ($image) {
-        $imageInfo = getimagesize($image["tmp_name"]);
-        if (!$imageInfo) {
-            array_push($errorList, "File does not look like an valid image");
-        } else {
-            $width = $imageInfo[0];
-            $height = $imageInfo[1];
-            if ($width > 300 || $height > 300) {
-                array_push($errorList, "Image must at most 300 by 300 pixels");
-            }
-        }
-    }
-    // receive data and insert
-    if (!$errorList) {
-        $imageBinaryData = file_get_contents($image['tmp_name']);
-        $ownerId = $_SESSION['user']['id'];
-        $mimeType = mime_content_type($image['tmp_name']);
-        DB::insert('houses', array(
-            'ownerId' => $ownerId,
-            'postCode' => $postalcode,
-            'address' => $address,
-            'phoneNumber' => $phoneNumber,
-            'numberOfBedroom' => $numberofbedroom,
-            'Price' => $price,
-            'yearOfBuild' => $year,
-            'status' => $status,
-            'imageData' => $imageBinaryData,
-            'imageMimeType' => $mimeType
-        ));
-
-        $app->render('add_success.html.twig');
-    } else {
-        // TODO: keep values entered on failed submission
-        $app->render('add_property.html.twig', array(
-            'v' => $valueList
-        ));
-    }
-});*/
 
 ///add and update
 
-$app->get('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
+/*$app->get('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
     /* FOR PROJECTS WITH MANY ACCESS LEVELS
       if (($_SESSION['user']) || ($_SESSION['level'] != 'admin')) {
       $app->render('forbidden.html.twig');
       return;
       } */
-    if ($op == 'edit') {
+   /* if ($op == 'edit') {
         $house = DB::queryFirstRow("SELECT * FROM houses WHERE id=%i", $id);
         if (!$house) {
             echo 'Product not found';
@@ -249,9 +194,9 @@ $app->get('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
     }
 })->conditions(array(
     'op' => '(add|edit)',
-    'id' => '[0-9]+'));
+    'id' => '[0-9]+'));*/
 
-$app->post('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
+/*$app->post('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
     $postalcode = $app->request()->post('postCode');
     $address = $app->request()->post('address');
     $image = isset($_FILES['image']) ? $_FILES['image'] : array();
@@ -327,7 +272,7 @@ $app->post('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
                 'status' => $status
                     ), "id=%i", $id);
 /// do I have to do this? fo both tables?
-            
+
             Db::update('imagepaths', array(
                 'imageData' => $imageBinaryData,
                 'imageMimeType' => $mimeType), $id);
@@ -344,8 +289,8 @@ $app->post('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
                 'imageData' => $imageBinaryData,
                 'imageMimeType' => $mimeType
             ));
-            
-             Db::insert('imagepaths', array(
+
+            Db::insert('imagepaths', array(
                 'imageData' => $imageBinaryData,
                 'imageMimeType' => $mimeType), $id);
         }
@@ -355,7 +300,7 @@ $app->post('/addproperty/:op(/:id)', function($op, $id = 0) use ($app) {
     }
 })->conditions(array(
     'op' => '(add|edit)',
-    'id' => '[0-9]+'));
+    'id' => '[0-9]+'));*/
 
 
 
