@@ -39,6 +39,18 @@ $twig = $app->view()->getEnvironment();
 $twig->addGlobal('user', $_SESSION['user']);
 
 $app->get('/', function() use ($app) {
+     if (!$_SESSION['user']) {
+        $app->render('index.html.twig');
+        return;
+    }
+    $userId = $_SESSION['user']['id'];
+    $houseList = DB::query("SELECT * FROM houses WHERE ownerId=%i", $userId);
+    //print_r($todoList);
+   // $app->render('index_todolist.html.twig', array('houseList' => $houseList));
+    $app->render('index.html.twig');
+});
+
+$app->get('/index', function() use ($app) {
     $app->render('index.html.twig');
 });
 
@@ -151,11 +163,13 @@ $app->get('/logout', function() use ($app) {
     $app->render('logout.html.twig');
 });
 
-//
+
+//to test
+/*
 $app->get('/session', function() {
     print_r($_SESSION);
    
-});
+});*/
 
 
 
