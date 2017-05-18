@@ -55,7 +55,7 @@ $app->get('/index', function() use ($app) {
 });
 
 // STATE 1: First show
-
+ 
 
 $app->get('/register', function() use ($app) {
     $app->render('register.html.twig');
@@ -164,12 +164,14 @@ $app->get('/logout', function() use ($app) {
 });
 
 
+
+
 //to test
-/*
+
 $app->get('/session', function() {
     print_r($_SESSION);
    
-});*/
+});
 
 
 
